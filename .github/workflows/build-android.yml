@@ -32,9 +32,11 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Make gradlew executable
+    - name: Make gradlew executable and fix line endings
       working-directory: ./android
-      run: chmod +x ./gradlew
+      run: |
+        sed -i 's/\r$//' ./gradlew
+        chmod +x ./gradlew
 
     - name: Build APK with Gradle
       working-directory: ./android
