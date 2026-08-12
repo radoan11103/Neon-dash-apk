@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Physics } from '@react-three/cannon';
+import { Physics, usePlane } from '@react-three/cannon';
 import { Environment, OrbitControls } from '@react-three/drei';
 import MainMenu from './components/MainMenu';
 import HUD from './components/HUD';
@@ -8,8 +8,9 @@ import CarController from './components/CarController';
 import { useGameStore } from './store';
 
 function Track() {
+  const [ref] = usePlane(() => ({ rotation: [-Math.PI / 2, 0, 0] }));
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+    <mesh ref={ref} receiveShadow>
       <planeGeometry args={[1000, 1000]} />
       <meshStandardMaterial color="#111" roughness={0.8} />
     </mesh>

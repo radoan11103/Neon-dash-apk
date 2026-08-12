@@ -137,8 +137,15 @@ export default function CarController({ position = [0, 1, 0] }) {
     };
   }, []);
 
+  // Track velocity safely
+  const velocity = useRef([0, 0, 0]);
+  useEffect(() => {
+    const unsubscribe = chassisApi.velocity.subscribe((v) => velocity.current = v);
+    return unsubscribe;
+  }, [chassisApi.velocity]);
+
   // Physics Loop
-  useFrame(() => {
+  useFrame((state) => {
     const { forward, backward, left, right, tiltAngle } = controls.current;
     const { maxSpeed, acceleration, handling } = selectedCar;
     
@@ -172,11 +179,13 @@ export default function CarController({ position = [0, 1, 0] }) {
     vehicleApi.setSteeringValue(controls.current.steerValue, 0);
     vehicleApi.setSteeringValue(controls.current.steerValue, 1);
 
-    // Update Speed in HUD
-    const velocity = useRef([0,0,0]);
-    chassisApi.velocity.subscribe((v) => velocity.current = v);
+    // Calculate Speed
     const currentSpeed = Math.sqrt(velocity.current[0]**2 + velocity.current[1]**2 + velocity.current[2]**2) * 3.6; // m/s to km/h
-    setSpeed(currentSpeed);
+    
+    // Throttle HUD update to 10 times a second to prevent React lag on mobile
+    if (state.clock.elapsedTime * 10 % 1 < 0.1) {
+      setSpeed(Math.round(currentSpeed));
+    }
     
     // Nitro Logic
     const currentNitro = useGameStore.getState().nitro;
