@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">NeonDash</string>
+    <string name="title_activity_main">NeonDash</string>
+    <string name="package_name">com.example.neondash</string>
+    <string name="custom_url_scheme">com.example.neondash</string>
+</resources>
